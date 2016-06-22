@@ -21,7 +21,9 @@ tomcat_pkgs = value_for_platform(
   'default' => ["tomcat#{node['tomcat']['base_version']}"]
 )
 
+#Installing 
 tomcat_pkgs.each do |pkg|
+Chef::Log.info("********** Installing package '#{pkg}' **********")
   package pkg do
     action :install
   end
