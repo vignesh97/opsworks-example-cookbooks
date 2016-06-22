@@ -21,6 +21,7 @@ tomcat_pkgs = value_for_platform(
   'default' => ["tomcat#{node['tomcat']['base_version']}"]
 )
 
+
 #Installing 
 tomcat_pkgs.each do |pkg|
 Chef::Log.info("********** Installing package '#{pkg}' **********")
@@ -29,10 +30,12 @@ Chef::Log.info("********** Installing package '#{pkg}' **********")
   end
 end
 
+
 link ::File.join(node['tomcat']['lib_dir'], node['tomcat']['mysql_connector_jar']) do
   to ::File.join(node['tomcat']['java_dir'], node['tomcat']['mysql_connector_jar'])
   action :create
 end
+Chef::Log.info("********** Linking file  '#{node['tomcat']['lib_dir']} , #{node['tomcat']['mysql_connector_jar']} with  #{node['tomcat']['java_dir']},#{node['tomcat']['mysql_connector_jar']}' **********")
 
 # remove the ROOT webapp, if it got installed by default
 include_recipe 'tomcat::remove_root_webapp'
