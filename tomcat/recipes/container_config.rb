@@ -13,6 +13,10 @@
 
 include_recipe 'tomcat::service'
 
+Chef::Log.info("********** Tomcat container config starts *********")
+Chef::Log.info("********** Tomcat Environmental file - #{node['tomcat']['system_env_dir']} , tomcat#{node['tomcat']['base_version']} *********")
+
+
 template 'tomcat environment configuration' do
   path ::File.join(node['tomcat']['system_env_dir'], "tomcat#{node['tomcat']['base_version']}")
   source 'tomcat_env_config.erb'
@@ -22,6 +26,8 @@ template 'tomcat environment configuration' do
   backup false
   notifies :restart, resources(:service => 'tomcat')
 end
+Chef::Log.info("********** Tomcat Server file - node['tomcat']['catalina_base_dir'] , server.xml *********")
+
 
 template 'tomcat server configuration' do
   path ::File.join(node['tomcat']['catalina_base_dir'], 'server.xml')
@@ -32,3 +38,4 @@ template 'tomcat server configuration' do
   backup false
   notifies :restart, resources(:service => 'tomcat')
 end
+Chef::Log.info("********** Restarting tomcat *********")

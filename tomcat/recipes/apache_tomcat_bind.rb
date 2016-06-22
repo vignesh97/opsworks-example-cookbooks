@@ -10,6 +10,8 @@
 # an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
 # or implied. See the License for the specific language governing permissions
 # and limitations under the License.
+Chef::Log.info("********** enable mod_proxy for apache-tomcat binding *********")
+Chef::Log.info("********** File Join #{node['apache']['dir']},'mods-enabled', 'proxy.load' || #{node['tomcat']['apache_tomcat_bind_mod']} !~ /proxy/*********")
 
 execute 'enable mod_proxy for apache-tomcat binding' do
   command '/usr/sbin/a2enmod proxy'
@@ -18,12 +20,21 @@ execute 'enable mod_proxy for apache-tomcat binding' do
   end
 end
 
+Chef::Log.info("********** enable mod_proxy for apache-tomcat binding *********")
+Chef::Log.info("**********  executing command /usr/sbin/a2enmod #{node['tomcat']['apache_tomcat_bind_mod']} *********")
+
+Chef::Log.info("**********  File symlink  #{node['apache']['dir']}, 'mods-enabled', #{node['tomcat']['apache_tomcat_bind_mod']}.load *********")
+
 execute 'enable module for apache-tomcat binding' do
   command "/usr/sbin/a2enmod #{node['tomcat']['apache_tomcat_bind_mod']}"
   not_if {::File.symlink?(::File.join(node['apache']['dir'], 'mods-enabled', "#{node['tomcat']['apache_tomcat_bind_mod']}.load"))}
 end
 
+
 include_recipe 'apache2::service'
+
+Chef::Log.info("********** tomcat thru apache binding *********")
+Chef::Log.info("**********  File join   #{node['apache']['dir']}, 'conf.d', #{node['tomcat']['apache_tomcat_bind_config']}*********")
 
 template 'tomcat thru apache binding' do
   path ::File.join(node['apache']['dir'], 'conf.d', node['tomcat']['apache_tomcat_bind_config'])
@@ -34,3 +45,4 @@ template 'tomcat thru apache binding' do
   backup false
   notifies :restart, resources(:service => 'apache2')
 end
+Chef::Log.info("********** Restarting apache2 *********")

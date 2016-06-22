@@ -13,9 +13,21 @@
 
 include_recipe 'tomcat::service'
 
-node[:deploy].each do |application, deploy|
-  context_name = deploy[:document_root].blank? ? application : deploy[:document_root]
+Chef::Log.info("********** Tomcat Context **********")
 
+Chef::Log.info("********** #{node[:deploy]}**********")
+
+
+node[:deploy].each do |application, deploy|
+
+  Chef::Log.info("********** deploy each loop - application = #{application} , deploy = #{deploy}**********")
+
+  context_name = deploy[:document_root].blank? ? application : deploy[:document_root]
+  
+  Chef::Log.info("********** context_name = #{context_name}**********")
+  Chef::Log.info("**********context file for #{application} (context name: #{context_name})***********")
+  Chef::Log.info("***********File Join #{node['tomcat']['catalina_base_dir']}, 'Catalina', 'localhost', #{context_name}.xml}*********")
+  Chef::Log.info("*********** Attributes - webapp_name = #{application} , resource_name = #{node['datasources'][context_name]}*********")
   template "context file for #{application} (context name: #{context_name})" do
     path ::File.join(node['tomcat']['catalina_base_dir'], 'Catalina', 'localhost', "#{context_name}.xml")
     source 'webapp_context.xml.erb'
@@ -28,3 +40,4 @@ node[:deploy].each do |application, deploy|
     notifies :restart, resources(:service => 'tomcat')
   end
 end
+  Chef::Log.info("*********** Tomcat restart*********")
