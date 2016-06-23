@@ -26,7 +26,7 @@ template 'tomcat environment configuration' do
   backup false
   notifies :restart, resources(:service => 'tomcat')
 end
-Chef::Log.info("********** Tomcat Server file - node['tomcat']['catalina_base_dir'] , server.xml *********")
+Chef::Log.info("********** Tomcat Server file - #{node['tomcat']['catalina_base_dir']},server.xml *********")
 
 
 template 'tomcat server configuration' do
