@@ -1,4 +1,4 @@
 
 source "https://supermarket.chef.io"
 
-cookbook 'webmin', '~> 0.1.3'
+cookbook "webmin"
